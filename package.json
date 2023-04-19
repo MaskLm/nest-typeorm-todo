@@ -1,0 +1,13 @@
+{
+  "name": "nest-typeorm-todo",
+  "version": "1.0.0",
+  "scripts": {
+    "frontend": "cd frontend && npm start",
+    "backend": "cd backend && npm run start:dev",
+    "start": "concurrently --kill-others \"npm run frontend\" \"npm run backend\""
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "concurrently": "^8.0.1"
+  }
+}
