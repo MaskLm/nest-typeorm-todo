@@ -1,15 +1,13 @@
 import {
   Column,
   CreateDateColumn,
-  Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { UserEntity } from '../user/user.entity';
+import { User } from '../../user/entities/user.entity';
 
-@Entity()
-export class TodosEntity {
+export class Todo {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -31,6 +29,6 @@ export class TodosEntity {
   @Column({ type: 'timestamp', nullable: true })
   deadline: Date;
 
-  @ManyToOne(() => UserEntity, (user) => user.todos)
-  user: UserEntity;
+  @ManyToOne(() => User, (user) => user.todos)
+  user: User;
 }
