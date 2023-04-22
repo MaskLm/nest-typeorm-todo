@@ -1,26 +1,49 @@
 import { Injectable } from '@nestjs/common';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import { JwtService } from '@nestjs/jwt';
+import { UserService } from '../user/user.service';
+import { User } from '../user/entities/user.entity';
+import * as bcrypt from 'bcrypt';
+import { jwtConstants } from './constants';
 
 @Injectable()
 export class AuthService {
-  create(createAuthDto: CreateAuthDto) {
-    return 'This action adds a new auth';
+  constructor(
+    private userService: UserService,
+    private jwtService: JwtService,
+  ) {}
+
+  async validateUser(
+    username: string,
+    password: string,
+  ): Promise<null | Omit<User, 'password'>> {
+    const existUser = await this.userService.findByUsername(username);
+
+    if (!existUser) {
+      return null;
+    }
+
+    const isMatch = await bcrypt.compare(password, existUser.password);
+
+    if (!isMatch) {
+      return null;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password: ignorePass, ...restUser } = existUser;
+
+    return restUser;
   }
 
-  findAll() {
-    return `This action returns all auth`;
-  }
+  async login(user: User) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...restUser } = user;
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
+    const payload = { ...restUser, sub: user.id };
 
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+    return {
+      token: this.jwtService.sign(payload),
+      user: restUser,
+      expiresIn: jwtConstants.expiresIn,
+    };
   }
 }
