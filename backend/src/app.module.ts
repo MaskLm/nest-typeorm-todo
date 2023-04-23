@@ -5,6 +5,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { TodoModule } from './todo/todo.module';
 import { AuthModule } from './auth/auth.module';
+import { Todo } from './todo/entities/todo.entity';
+import { User } from './user/entities/user.entity';
 
 @Module({
   imports: [
@@ -15,7 +17,8 @@ import { AuthModule } from './auth/auth.module';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      entities: [__dirname + '/**/*.entity{.ts,.js}'],
+      //entities: [__dirname + '**/*.entity{.ts,.js}'],
+      entities: [User, Todo],
       synchronize: true,
       logging: false,
       migrations: [__dirname + '/migrations/!*{.ts,.js}'],

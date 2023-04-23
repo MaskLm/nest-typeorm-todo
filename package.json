@@ -2,7 +2,7 @@
   "name": "nest-typeorm-todo",
   "version": "1.0.0",
   "scripts": {
-    "frontend": "cd frontend && npm start",
+    "frontend": "cd frontend && npm run dev",
     "backend": "cd backend && npm run start:dev",
     "start": "concurrently --kill-others \"npm run frontend\" \"npm run backend\""
   },

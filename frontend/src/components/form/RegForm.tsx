@@ -1,6 +1,7 @@
 import React, { FormEvent } from "react";
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { DoReg } from "../../api/DoReg";
 
 // 定义一个 Yup 验证模式
 const validationSchema = Yup.object({
@@ -20,8 +21,9 @@ const RegForm: React.FC = () => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
+      console.log(import.meta.env.VITE_API_URL + "/user/reg");
       console.log('Form values:', values);
-
+      console.log(DoReg(values));
     },
   });
 
