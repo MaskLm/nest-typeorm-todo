@@ -1,12 +1,14 @@
 import {
   Column,
   CreateDateColumn,
+  Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { User } from '../../user/entities/user.entity';
 
+@Entity()
 export class Todo {
   @PrimaryGeneratedColumn()
   id: number;

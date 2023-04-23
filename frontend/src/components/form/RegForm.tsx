@@ -1,7 +1,8 @@
-import React, { FormEvent } from "react";
+import React from "react";
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { DoReg } from "../../api/DoReg";
+import { useNavigate } from "react-router-dom";
 
 // 定义一个 Yup 验证模式
 const validationSchema = Yup.object({
@@ -21,9 +22,18 @@ const RegForm: React.FC = () => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
+      const navigate = useNavigate();
       console.log(import.meta.env.VITE_API_URL + "/user/reg");
       console.log('Form values:', values);
-      console.log(DoReg(values));
+      try{DoReg(values);
+        alert("注册成功");
+        setTimeout(() => {
+          navigate('/login');
+        }, 1000);
+      }
+      catch (error){
+        alert(error);
+      }
     },
   });
 

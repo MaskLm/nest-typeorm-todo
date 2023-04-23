@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 
 interface CreateUserDto {
@@ -11,8 +11,22 @@ export async function DoReg(newUser: CreateUserDto) {
   //通过axios发送请求
   try {
     const res = await axios.post(import.meta.env.VITE_API_URL + "/user/reg", newUser);
-    return res.data;
-  }catch (e) {
-    console.error(e);
+    console.log('Data:', res.data);
+  }catch (error) {
+    const axiosError = error as AxiosError;
+    if (axiosError.response) {
+      console.error('Error status code:', axiosError.response.status);
+      console.error('Error data:', axiosError.response.data);
+      // 向上抛出信息
+      throw axiosError.response.data;
+    } else if (axiosError.request) {
+      console.error('Network error:', axiosError.message);
+      // 向上抛出
+      throw axiosError.message;
+    } else {
+      console.error('Axios or programming error:', axiosError.message);
+      // 向上抛出
+      throw axiosError.message;
+    }
   }
 }
