@@ -4,7 +4,7 @@ import { UserService } from '../user/user.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { User } from '../user/entities/user.entity';
 import { Repository } from 'typeorm';
-import { jwtConstants } from './constants';
+import { jwtAccessConstants } from './constants';
 import { JwtModule } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
@@ -20,8 +20,8 @@ describe('AuthService', () => {
     moduleRef = await Test.createTestingModule({
       imports: [
         JwtModule.register({
-          secret: jwtConstants.secret,
-          signOptions: { expiresIn: jwtConstants.expiresIn },
+          secret: jwtAccessConstants.secret,
+          signOptions: { expiresIn: jwtAccessConstants.expiresIn },
         }),
       ],
       providers: [

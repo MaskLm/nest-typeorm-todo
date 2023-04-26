@@ -30,6 +30,9 @@ export class User {
   @Column({ default: false, nullable: false })
   admin: boolean;
 
+  @Column({ nullable: true })
+  refreshToken: string;
+
   @OneToMany(() => Todo, (todo) => todo.user)
   todos: Todo[];
 

@@ -1,4 +1,5 @@
 import axios, { AxiosError } from "axios";
+import { ResponseError } from "../tools/interfaces/ResponseError";
 
 
 interface CreateUserDto {
@@ -18,8 +19,13 @@ export async function DoReg(newUser: CreateUserDto) {
       console.error('Error status code:', axiosError.response.status);
       console.error('Error data:', axiosError.response.data);
       // 向上抛出信息
-      throw axiosError.response.data;
-    } else if (axiosError.request) {
+      const responseError:ResponseError = axiosError.response.data as ResponseError;
+      throw responseError.message;
+    } else {
+      throw 'Please Contact Admin';
+    }
+
+    /*else if (axiosError.request) {
       console.error('Network error:', axiosError.message);
       // 向上抛出
       throw axiosError.message;
@@ -27,6 +33,6 @@ export async function DoReg(newUser: CreateUserDto) {
       console.error('Axios or programming error:', axiosError.message);
       // 向上抛出
       throw axiosError.message;
-    }
+    }*/
   }
 }

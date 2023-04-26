@@ -1,37 +1,41 @@
 import React from "react";
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import { DoReg } from "../../api/DoReg";
 import { useNavigate } from "react-router-dom";
 
 // 定义一个 Yup 验证模式
 const validationSchema = Yup.object({
-  email: Yup.string().email('Invalid email address').required('Email is required'),
-  username: Yup.string().min(6, 'Username must be at least 6 characters').required('Username is required'),
+  email: Yup.string()
+    .email("Invalid email address")
+    .required("Email is required"),
+  username: Yup.string()
+    .min(6, "Username must be at least 6 characters")
+    .required("Username is required"),
   password: Yup.string()
-    .min(6, 'Password must be at least 6 characters')
-    .required('Password is required'),
+    .min(6, "Password must be at least 6 characters")
+    .required("Password is required"),
 });
 
 const RegForm: React.FC = () => {
+  const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
-      email: '',
-      username: '',
-      password: '',
+      email: "",
+      username: "",
+      password: "",
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      const navigate = useNavigate();
+    onSubmit: async (values) => {
       console.log(import.meta.env.VITE_API_URL + "/user/reg");
-      console.log('Form values:', values);
-      try{DoReg(values);
+      console.log("Form values:", values);
+      try {
+        await DoReg(values);
         alert("注册成功");
         setTimeout(() => {
-          navigate('/login');
+          navigate("/login");
         }, 1000);
-      }
-      catch (error){
+      } catch (error) {
         alert(error);
       }
     },
