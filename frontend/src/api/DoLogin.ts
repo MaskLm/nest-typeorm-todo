@@ -15,16 +15,20 @@ export async function DoLogin(loginUser: loginUserDto) {
     );
     console.log("Data:", res.data);
   } catch (error) {
-    const axiosError = error as AxiosError;
-    if (axiosError.response) {
-      console.error("Error status code:", axiosError.response.status);
-      console.error("Error data:", axiosError.response.data);
-      // 向上抛出信息
-      const responseError: ResponseError = axiosError.response
-        .data as ResponseError;
-      throw responseError.message;
+    if (axios.isAxiosError(error)) {
+      const axiosError = error as AxiosError;
+      if (axiosError.response) {
+        console.error("Error status code:", axiosError.response.status);
+        console.error("Error data:", axiosError.response.data);
+        // 向上抛出信息
+        const responseError: ResponseError = axiosError.response
+          .data as ResponseError;
+        throw responseError.message;
+      } else {
+        throw "Please Contact Admin";
+      }
     } else {
-      throw "Please Contact Admin";
+      throw error;
     }
   }
 }

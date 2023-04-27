@@ -15,12 +15,12 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     request: Request,
     username: string,
     password: string,
-  ): Promise<Omit<User, 'password'>> {
+  ): Promise<Omit<Omit<User, 'password'>, 'refreshToken'>> {
     const contextId = ContextIdFactory.getByRequest(request);
     const authService = await this.moduleRef.resolve(AuthService, contextId);
     const user = await authService.validateUser(username, password);
     if (!user) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('Invalid username or password');
     }
     return user;
   }

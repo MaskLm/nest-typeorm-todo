@@ -7,7 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { LoginUserDto } from '../user/dto/login-user.dto';
 
-type UserWithoutPassword = Omit<User, 'password'>;
+type UserWithoutAuthMsg = Omit<Omit<User, 'password'>, 'refreshToken'>;
 
 @Injectable()
 export class AuthService {
@@ -21,7 +21,7 @@ export class AuthService {
   async validateUser(
     username: string,
     password: string,
-  ): Promise<null | Omit<User, 'password'>> {
+  ): Promise<null | UserWithoutAuthMsg> {
     const existUser = await this.userService.findByUsername(username);
 
     if (!existUser) {
@@ -33,25 +33,34 @@ export class AuthService {
     if (!isMatch) {
       return null;
     }
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password: ignorePass, ...restUser } = existUser;
+    const {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      password: ignorePass,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      refreshToken: ignoreRefreshToken,
+      ...restUser
+    } = existUser;
 
     return restUser;
   }
 
-  async generateAccessToken(user: UserWithoutPassword) {
-    const payload = { email: user.email, sub: user.id };
+  async generateAccessToken(user: UserWithoutAuthMsg) {
+    const payload = {
+      username: user.username,
+      sub: user.id,
+      admin: user.admin,
+    };
     return this.jwtService.sign(payload);
   }
 
-  async generateRefreshToken(user: UserWithoutPassword) {
-    const payload = { email: user.email, sub: user.id };
+  async generateRefreshToken(userWAM: UserWithoutAuthMsg) {
+    const payload = { username: userWAM.username, sub: userWAM.id };
     const refreshToken = this.jwtService.sign(payload, {
       expiresIn: process.env.JWT_REFRESH_EXPIRESIN,
     });
+    const user = await this.userService.findOne(userWAM.id);
     user.refreshToken = refreshToken;
-    await this.userRepository.save(user);
+    await this.userService.update(user.id, user);
     return refreshToken;
   }
 
@@ -63,7 +72,7 @@ export class AuthService {
       });
 
       // Find the user by ID
-      const user = await this.userRepository.findOne(decodedPayload.sub);
+      const user = await this.userService.findOne(decodedPayload.sub);
 
       // Check if the user exists and the Refresh Token matches
       if (user && user.refreshToken === refreshToken) {
@@ -78,13 +87,10 @@ export class AuthService {
   }
 
   async login(loginUser: LoginUserDto) {
-    const restUser = await this.validateUser(
-      loginUser.username,
-      loginUser.password,
-    );
+    const restUser = await this.userService.findByUsername(loginUser.username);
     return {
-      accessToken: this.generateAccessToken(restUser),
-      refreshToken: this.generateRefreshToken(restUser),
+      accessToken: await this.generateAccessToken(restUser),
+      refreshToken: await this.generateRefreshToken(restUser),
       user: restUser,
     };
   }
