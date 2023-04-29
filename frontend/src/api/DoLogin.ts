@@ -13,6 +13,9 @@ export async function DoLogin(loginUser: loginUserDto) {
       import.meta.env.VITE_API_URL + "/auth/login",
       loginUser
     );
+    localStorage.setItem('accessToken', res.data.accessToken);
+    localStorage.setItem('refreshToken', res.data.refreshToken);
+    localStorage.setItem('user', JSON.stringify(res.data.user));
     console.log("Data:", res.data);
   } catch (error) {
     if (axios.isAxiosError(error)) {

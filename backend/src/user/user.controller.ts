@@ -8,37 +8,48 @@ import {
   Delete,
   ClassSerializerInterceptor,
   UseInterceptors,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { ResourceOwnershipGuard } from '../auth/guards/resource-ownership.guard';
+import { Role } from '../auth/roles/roles.interface';
+import { Roles } from '../auth/roles/roles.decorator';
+import { RolesGuard } from '../auth/guards/roles.guard';
 
 @Controller('user')
+@UseInterceptors(ClassSerializerInterceptor)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @UseInterceptors(ClassSerializerInterceptor)
   @Post('reg')
   async create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
 
   @Get()
+  @Roles(Role.Admin)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   findAll() {
     return this.userService.findAll();
   }
 
   @Get(':id')
+  @UseGuards(JwtAuthGuard, ResourceOwnershipGuard)
   findOne(@Param('id') id: string) {
     return this.userService.findOne(+id);
   }
 
   @Patch(':id')
+  @UseGuards(JwtAuthGuard, ResourceOwnershipGuard)
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(+id, updateUserDto);
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard, ResourceOwnershipGuard)
   remove(@Param('id') id: string) {
     return this.userService.remove(+id);
   }

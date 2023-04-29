@@ -27,7 +27,7 @@ export const LoginForm: React.FC = () => {
         await DoLogin(values);
         alert("登陆成功");
         setTimeout(() => {
-          navigate('/login');
+          navigate('/');
         }, 1000);
       }
       catch (error){

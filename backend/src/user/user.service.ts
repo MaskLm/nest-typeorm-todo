@@ -59,4 +59,15 @@ export class UserService {
       id,
     });
   }
+
+  async isOwner(
+    user: User,
+    targetUserId: number,
+    resourceName: string,
+  ): Promise<boolean> {
+    if (resourceName === 'user') {
+      return user.id === targetUserId || user.admin;
+    }
+    return false;
+  }
 }

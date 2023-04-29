@@ -32,5 +32,5 @@ export class Todo {
   deadline: Date;
 
   @ManyToOne(() => User, (user) => user.todos)
-  user: User;
+  user: number;
 }

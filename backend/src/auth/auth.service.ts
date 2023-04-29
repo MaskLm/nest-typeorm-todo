@@ -87,7 +87,9 @@ export class AuthService {
   }
 
   async login(loginUser: LoginUserDto) {
-    const restUser = await this.userService.findByUsername(loginUser.username);
+    const user = await this.userService.findByUsername(loginUser.username);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, refreshToken, ...restUser } = user;
     return {
       accessToken: await this.generateAccessToken(restUser),
       refreshToken: await this.generateRefreshToken(restUser),

@@ -5,9 +5,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { UniqueConstraintInterceptor } from './interceptors/unique-constraint.interceptor';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { ResourceModule } from '../resource/resource.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User])],
+  imports: [TypeOrmModule.forFeature([User]), ResourceModule],
   controllers: [UserController],
   providers: [
     UserService,
