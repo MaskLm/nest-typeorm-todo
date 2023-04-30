@@ -8,7 +8,6 @@ import {
   Delete,
   UseGuards,
   Query,
-  SetMetadata,
 } from '@nestjs/common';
 import { TodoService } from './todo.service';
 import { CreateTodoDto } from './dto/create-todo.dto';
@@ -26,7 +25,6 @@ export class TodoController {
   constructor(private readonly todoService: TodoService) {}
 
   @Post()
-  @SetMetadata('resourceName', 'todo')
   @UseGuards(JwtAuthGuard, TodoOwnershipGuard)
   create(@Body() createTodoDto: CreateTodoDto) {
     return this.todoService.create(createTodoDto);
@@ -46,7 +44,7 @@ export class TodoController {
   }
 
   @Patch(':id')
-  @UseGuards(JwtAuthGuard, ResourceOwnershipGuard)
+  @UseGuards(JwtAuthGuard, TodoOwnershipGuard)
   update(@Param('id') id: string, @Body() updateTodoDto: UpdateTodoDto) {
     return this.todoService.update(+id, updateTodoDto);
   }

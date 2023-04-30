@@ -59,7 +59,7 @@ export const AddTodoForm: React.FC = () => {
         <input
           id="deadline"
           name="deadline"
-          type="date"
+          type="datetime-local"
           onChange={formik.handleChange}
           value={formik.values.deadline}
         />

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Paginate from 'react-paginate';
 import { DoUserTodo } from "../../api/DoUserTodo";
 import { useNavigate } from "react-router-dom";
+import TodoForm from "../form/TodoForm";
 
 interface Todo {
   id: number;
@@ -14,11 +15,13 @@ interface Todo {
   user: number;
 }
 
+
 const TodoList: React.FC = () => {
   const navigate = useNavigate();
   const [todos, setTodos] = useState<Todo[]| null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
+  const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
   const itemsPerPage = 3;
 
   useEffect(() => {
@@ -51,6 +54,14 @@ const TodoList: React.FC = () => {
     return <p>Not found todo</p>;
   }
 
+  function handleEditClick(todo: Todo) {
+    const fixedTodo: Todo = {
+      ...todo,
+      deadline: todo.deadline.slice(0,-1),
+    }
+    setEditingTodo(fixedTodo);
+  }
+
   return (
     <div>
       <ul>
@@ -62,6 +73,9 @@ const TodoList: React.FC = () => {
             <div>Created At: {todo.createdAt}</div>
             <div>Updated At: {todo.updatedAt}</div>
             <div>Deadline: {todo.deadline}</div>
+            <div>
+              <button onClick={() => handleEditClick(todo)}>Edit</button>
+            </div>
           </li>
         ))}
       </ul>
@@ -75,6 +89,11 @@ const TodoList: React.FC = () => {
         previousLabel="上一页"
         nextLabel="下一页"
       />
+      <div>
+        {editingTodo ? (
+          <TodoForm initialValues={editingTodo} />
+        ):(<></>)}
+      </div>
     </div>
   );
 };
