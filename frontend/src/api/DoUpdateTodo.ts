@@ -9,12 +9,11 @@ export async function DoUpdateTodo(values: any){
   if (accessToken && userid !== -1) {
     try{
       const res = await axios.patch(
-        import.meta.env.VITE_API_URL + `/todo`,updateTodo,
+        import.meta.env.VITE_API_URL + `/todo/${updateTodo.id}`,updateTodo,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
-          params: {id: values.id}
         }
       );
       console.log("Data:", res.data);

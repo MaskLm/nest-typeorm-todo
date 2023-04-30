@@ -1,6 +1,8 @@
-import React, { useEffect } from 'react';
-import { Formik, Form, Field, ErrorMessage, FormikProps } from 'formik';
-import * as Yup from 'yup';
+import React, { useEffect } from "react";
+import { Formik, Form, Field, ErrorMessage, FormikProps } from "formik";
+import * as Yup from "yup";
+import { DoUpdateTodo } from "../../api/DoUpdateTodo";
+import { useNavigate } from "react-router-dom";
 
 interface TodoFormProps {
   initialValues: TodoFormValues;
@@ -13,15 +15,23 @@ interface TodoFormValues {
   deadline: string;
   done: boolean;
 }
+
 const validationSchema = Yup.object({
-  title: Yup.string().required('Title is required'),
-  description: Yup.string().required('Description is required'),
+  title: Yup.string().required("Title is required"),
+  description: Yup.string().required("Description is required"),
   deadline: Yup.date().nullable(),
 });
-
 const TodoForm: React.FC<TodoFormProps> = ({ initialValues }) => {
-  const handleSubmit = (values: TodoFormValues) => {
-    //await DoUpdateTodo(values);
+  const handleSubmit = async (values: TodoFormValues) => {
+    try {
+      await DoUpdateTodo(values);
+      alert("Change Success");
+      setTimeout(() => {
+        window.location.reload();
+        }, 1000);
+    } catch (error) {
+      alert (error);
+    }
   };
 
   return (
