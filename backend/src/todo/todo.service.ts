@@ -4,7 +4,6 @@ import { UpdateTodoDto } from './dto/update-todo.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Todo } from './entities/todo.entity';
-import { User } from '../user/entities/user.entity';
 
 @Injectable()
 export class TodoService {
@@ -30,17 +29,16 @@ export class TodoService {
 
   async findAllByUserId(userId: number, page: number, itemsPerPage: number) {
     const skip = (page - 1) * itemsPerPage;
-
     // Find todos with pagination
     const todos = await this.todoRepository.find({
       skip,
       take: itemsPerPage,
-      where: { user: userId },
+      where: { user: { id: userId } },
     });
 
     // Get the total count of todos for the user
     const totalCount = await this.todoRepository.count({
-      where: { user: userId },
+      where: { user: { id: userId } },
     });
 
     // Calculate the total number of pages
@@ -55,6 +53,7 @@ export class TodoService {
   async findOne(id: number) {
     return await this.todoRepository.findOne({
       where: { id },
+      relations: ['user'],
     });
   }
 
@@ -70,17 +69,5 @@ export class TodoService {
     return await this.todoRepository.delete({
       id,
     });
-  }
-
-  async isOwner(
-    user: User,
-    targetTodoId: number,
-    resourceName: string,
-  ): Promise<boolean> {
-    if (resourceName === 'todo') {
-      const todo = await this.findOne(targetTodoId);
-      return (todo && todo.user === user.id) || user.admin;
-    }
-    return false;
   }
 }

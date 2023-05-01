@@ -1,22 +1,20 @@
 import { getUserid } from "../tools/functions/getUserid";
-import axios, { AxiosError } from "axios";
-import { ResponseError } from "../tools/interfaces/ResponseError";
+import axios from "axios";
 import { handleAxiosError } from "../tools/functions/handleAxiosError";
 
-export async function DoUpdateTodo(values: any){
+export async function DoDeleteTodo(todoId: number){
   const userid = getUserid();
   const accessToken = localStorage.getItem("accessToken");
-  const updateTodo = {...values, user: userid}
   if (accessToken && userid !== -1) {
     try{
-      const res = await axios.patch(
-        import.meta.env.VITE_API_URL + `/todo/${updateTodo.id}`,updateTodo,
+      const res = await axios.delete(
+        import.meta.env.VITE_API_URL + `/todo/${todoId}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
-          },
+          }
         }
-      );
+        );
       console.log("Data:", res.data);
     }catch (error) {
       handleAxiosError(error);

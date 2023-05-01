@@ -11,6 +11,6 @@ export class UserOwnershipGuard implements CanActivate {
     const params = request.params;
     const targetUserId = parseInt(params.id, 10);
 
-    return user.id === targetUserId;
+    return user.id === targetUserId || user.admin === true;
   }
 }

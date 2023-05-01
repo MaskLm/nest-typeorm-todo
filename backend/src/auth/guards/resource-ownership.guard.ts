@@ -1,3 +1,4 @@
+/*
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { ResourceServiceResolver } from '../../resource/resource-service-resolver.service';
@@ -28,3 +29,4 @@ export class ResourceOwnershipGuard implements CanActivate {
     return resourceService.isOwner(user, targetResourceId, resourceName);
   }
 }
+*/

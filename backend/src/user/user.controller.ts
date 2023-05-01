@@ -14,10 +14,10 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { ResourceOwnershipGuard } from '../auth/guards/resource-ownership.guard';
 import { Role } from '../auth/roles/roles.interface';
 import { Roles } from '../auth/roles/roles.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
+import { UserOwnershipGuard } from '../auth/guards/user-ownership.guard';
 
 @Controller('user')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -37,19 +37,19 @@ export class UserController {
   }
 
   @Get(':id')
-  @UseGuards(JwtAuthGuard, ResourceOwnershipGuard)
+  @UseGuards(JwtAuthGuard, UserOwnershipGuard)
   findOne(@Param('id') id: string) {
     return this.userService.findOne(+id);
   }
 
   @Patch(':id')
-  @UseGuards(JwtAuthGuard, ResourceOwnershipGuard)
+  @UseGuards(JwtAuthGuard, UserOwnershipGuard)
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(+id, updateUserDto);
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthGuard, ResourceOwnershipGuard)
+  @UseGuards(JwtAuthGuard, UserOwnershipGuard)
   remove(@Param('id') id: string) {
     return this.userService.remove(+id);
   }

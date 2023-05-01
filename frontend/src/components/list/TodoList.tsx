@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import Paginate from 'react-paginate';
+import React, { useState, useEffect } from "react";
+import Paginate from "react-paginate";
 import { DoUserTodo } from "../../api/DoUserTodo";
 import { useNavigate } from "react-router-dom";
 import TodoForm from "../form/TodoForm";
+import { DoDeleteTodo } from "../../api/DoDeleteTodo";
 
 interface Todo {
   id: number;
@@ -15,10 +16,9 @@ interface Todo {
   user: number;
 }
 
-
 const TodoList: React.FC = () => {
   const navigate = useNavigate();
-  const [todos, setTodos] = useState<Todo[]| null>(null);
+  const [todos, setTodos] = useState<Todo[] | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
@@ -36,14 +36,13 @@ const TodoList: React.FC = () => {
         console.error("Error fetching todos:", error);
         alert(error);
         setTimeout(() => {
-          navigate('/login');
+          navigate("/login");
         }, 1000);
       });
   }, [currentPage]);
 
-
   const handlePageClick = (selectedItem: { selected: number }) => {
-    setCurrentPage(selectedItem.selected+1);
+    setCurrentPage(selectedItem.selected + 1);
   };
 
   if (todos === null) {
@@ -57,9 +56,19 @@ const TodoList: React.FC = () => {
   function handleEditClick(todo: Todo) {
     const fixedTodo: Todo = {
       ...todo,
-      deadline: todo.deadline.slice(0,-1),
-    }
+      deadline: todo.deadline.slice(0, -1),
+    };
     setEditingTodo(fixedTodo);
+  }
+
+  async function handleDeleteClick(todo: Todo) {
+    try {
+      await DoDeleteTodo(todo.id);
+      alert("Delete Todo Success");
+      window.location.reload();
+    } catch (error) {
+      alert(error);
+    }
   }
 
   return (
@@ -69,11 +78,12 @@ const TodoList: React.FC = () => {
           <li key={todo.id}>
             <div>Title: {todo.title}</div>
             <div>Description: {todo.description}</div>
-            <div>Done: {todo.done ? 'Yes' : 'No'}</div>
+            <div>Done: {todo.done ? "Yes" : "No"}</div>
             <div>Created At: {todo.createdAt}</div>
             <div>Updated At: {todo.updatedAt}</div>
             <div>Deadline: {todo.deadline}</div>
             <div>
+              <button onClick={() => handleDeleteClick(todo)}>Delete</button>
               <button onClick={() => handleEditClick(todo)}>Edit</button>
             </div>
           </li>
@@ -90,9 +100,7 @@ const TodoList: React.FC = () => {
         nextLabel="下一页"
       />
       <div>
-        {editingTodo ? (
-          <TodoForm initialValues={editingTodo} />
-        ):(<></>)}
+        {editingTodo ? <TodoForm initialValues={editingTodo} /> : <></>}
       </div>
     </div>
   );

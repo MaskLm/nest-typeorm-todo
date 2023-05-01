@@ -1,15 +1,15 @@
-import { getUserid } from "../tools/functions/getUserid";
-import axios, { AxiosError } from "axios";
-import { ResponseError } from "../tools/interfaces/ResponseError";
+import axios from "axios";
+import { handleAxiosError } from "../tools/functions/handleAxiosError";
 
-export async function DoAddTodo(values: any){
-  const userid = getUserid();
+export async function DoAddTodo(values: any) {
+  const userString = localStorage.getItem("user");
+  const user = userString ? JSON.parse(userString) : null;
   const accessToken = localStorage.getItem("accessToken");
-  const addTodo = {...values, user: userid}
-  if (accessToken && userid !== -1) {
-    try{
+  const addTodo = { ...values, user: user }
+  if (!!accessToken && !!user) {
+    try {
       const res = await axios.post(
-        import.meta.env.VITE_API_URL + `/todo`,addTodo,
+        import.meta.env.VITE_API_URL + `/todo`, addTodo,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -17,22 +17,8 @@ export async function DoAddTodo(values: any){
         }
       );
       console.log("Data:", res.data);
-    }catch (error) {
-      if (axios.isAxiosError(error)) {
-        const axiosError = error as AxiosError;
-        if (axiosError.response) {
-          console.error("Error status code:", axiosError.response.status);
-          console.error("Error data:", axiosError.response.data);
-          // 向上抛出信息
-          const responseError: ResponseError = axiosError.response
-            .data as ResponseError;
-          throw responseError.message;
-        } else {
-          throw "Please Contact Admin";
-        }
-      } else {
-        throw error;
-      }
+    } catch (error) {
+      handleAxiosError(error);
     }
   }
 }

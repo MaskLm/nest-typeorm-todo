@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -32,5 +33,6 @@ export class Todo {
   deadline: Date;
 
   @ManyToOne(() => User, (user) => user.todos)
-  user: number;
+  @JoinColumn()
+  user: User;
 }

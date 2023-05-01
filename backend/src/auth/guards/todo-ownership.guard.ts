@@ -9,8 +9,8 @@ export class TodoOwnershipGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const user = request.user;
     const todo = request.body;
-    const todoUser = parseInt(todo.user, 10);
+    const todoUser = parseInt(todo.user.id, 10);
 
-    return user.id === todoUser;
+    return user.id === todoUser || user.admin === true;
   }
 }

@@ -13,12 +13,12 @@ import { TodoService } from './todo.service';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { ResourceOwnershipGuard } from '../auth/guards/resource-ownership.guard';
 import { Roles } from '../auth/roles/roles.decorator';
 import { Role } from '../auth/roles/roles.interface';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { UserOwnershipGuard } from '../auth/guards/user-ownership.guard';
 import { TodoOwnershipGuard } from '../auth/guards/todo-ownership.guard';
+import { TodoParamsOwnershipGuard } from '../auth/guards/todo-params-ownership.guard';
 
 @Controller('todo')
 export class TodoController {
@@ -38,24 +38,23 @@ export class TodoController {
   }
 
   @Get(':id')
-  @UseGuards(JwtAuthGuard, ResourceOwnershipGuard)
+  @UseGuards(JwtAuthGuard, TodoParamsOwnershipGuard)
   findOne(@Param('id') id: string) {
     return this.todoService.findOne(+id);
   }
 
   @Patch(':id')
-  @UseGuards(JwtAuthGuard, TodoOwnershipGuard)
+  @UseGuards(JwtAuthGuard, TodoParamsOwnershipGuard)
   update(@Param('id') id: string, @Body() updateTodoDto: UpdateTodoDto) {
     return this.todoService.update(+id, updateTodoDto);
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthGuard, ResourceOwnershipGuard)
+  @UseGuards(JwtAuthGuard, TodoParamsOwnershipGuard)
   remove(@Param('id') id: string) {
     return this.todoService.remove(+id);
   }
 
-  //TODO 修复ResouceOwnershipGuard在这个路由不工作的错误
   @Get('user/:id')
   @UseGuards(JwtAuthGuard, UserOwnershipGuard)
   findAllByUserId(
