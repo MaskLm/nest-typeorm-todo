@@ -1,5 +1,4 @@
-import axios, { AxiosError } from "axios";
-import { ResponseError } from "../tools/interfaces/ResponseError";
+import axios from "axios";
 import { handleAxiosError } from "../tools/functions/handleAxiosError";
 
 //TODO 支持邮箱/用户名登录

@@ -1,6 +1,5 @@
 import { getUserid } from "../tools/functions/getUserid";
-import axios, { AxiosError } from "axios";
-import { ResponseError } from "../tools/interfaces/ResponseError";
+import axios from "axios";
 import { handleAxiosError } from "../tools/functions/handleAxiosError";
 
 export async function DoUpdateTodo(values: any){
