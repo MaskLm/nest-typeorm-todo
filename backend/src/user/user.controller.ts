@@ -8,8 +8,9 @@ import {
   Delete,
   ClassSerializerInterceptor,
   UseInterceptors,
-  UseGuards, Query
-} from "@nestjs/common";
+  UseGuards,
+  Query,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';

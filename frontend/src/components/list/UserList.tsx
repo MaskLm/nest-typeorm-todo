@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Paginate from "react-paginate";
 import { useNavigate } from "react-router-dom";
-import { DoDeleteTodo } from "../../api/DoDeleteTodo";
 import { DoUser } from "../../api/DoUser";
 import { DoDeleteUser } from "../../api/DoDeleteUser";
 import UserForm from "../form/UserForm";
