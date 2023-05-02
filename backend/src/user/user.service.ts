@@ -60,14 +60,23 @@ export class UserService {
     });
   }
 
-  async isOwner(
-    user: User,
-    targetUserId: number,
-    resourceName: string,
-  ): Promise<boolean> {
-    if (resourceName === 'user') {
-      return user.id === targetUserId || user.admin;
-    }
-    return false;
+  async findAllPagination(page: number, itemsPerPage: number) {
+    const skip = (page - 1) * itemsPerPage;
+    // Find todos with pagination
+    const users = await this.userRepository.find({
+      skip,
+      take: itemsPerPage,
+    });
+
+    // Get the total count of todos for the user
+    const totalCount = await this.userRepository.count({});
+
+    // Calculate the total number of pages
+    const totalPages = Math.ceil(totalCount / itemsPerPage);
+
+    return {
+      users: users,
+      totalPages: totalPages,
+    };
   }
 }

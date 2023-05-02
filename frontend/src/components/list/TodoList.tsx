@@ -62,12 +62,15 @@ const TodoList: React.FC = () => {
   }
 
   async function handleDeleteClick(todo: Todo) {
-    try {
-      await DoDeleteTodo(todo.id);
-      alert("Delete Todo Success");
-      window.location.reload();
-    } catch (error) {
-      alert(error);
+    const confirmed = confirm("Are you sure you want to delete this todo?");
+    if (confirmed) {
+      try {
+        await DoDeleteTodo(todo.id);
+        alert("Delete Todo Success");
+        window.location.reload();
+      } catch (error) {
+        alert(error);
+      }
     }
   }
 

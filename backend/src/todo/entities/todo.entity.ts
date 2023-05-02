@@ -33,6 +33,5 @@ export class Todo {
   deadline: Date;
 
   @ManyToOne(() => User, (user) => user.todos)
-  @JoinColumn()
   user: User;
 }
