@@ -46,8 +46,8 @@ const UserList: React.FC = () => {
     return <p>Loading...</p>;
   }
 
-  if (users.length === 0) {
-    return <p>Not found todo</p>;
+  if (!users || users.length === 0) {
+    return <p>Not found User</p>;
   }
 
   function handleEditClick(user: User) {

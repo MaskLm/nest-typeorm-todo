@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { Formik, Form, Field, ErrorMessage, FormikProps } from "formik";
 import * as Yup from "yup";
 import { DoUpdateTodo } from "../../api/DoUpdateTodo";
+import { DoUpdateUser } from "../../api/DoUpdateUser";
 
 interface UserFormProps {
   initialValues: UserFormValues;
@@ -17,14 +18,13 @@ interface UserFormValues {
 
 const validationSchema = Yup.object({
   username: Yup.string().required("Title is required"),
-  password: Yup.string().required("Description is required"),
   email: Yup.string().email('Invalid email address').required('Email is required'),
   admin: Yup.boolean().nullable(),
 });
 const TodoForm: React.FC<UserFormProps> = ({ initialValues }) => {
   const handleSubmit = async (values: UserFormValues) => {
     try {
-      await DoUpdateTodo(values);
+      await DoUpdateUser(values);
       alert("Change Success");
       setTimeout(() => {
         window.location.reload();

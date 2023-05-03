@@ -4,6 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -47,10 +48,18 @@ export class UserService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
-    const { username, password, email } = updateUserDto;
+    const { username, password, email, refreshToken, admin } = updateUserDto;
+    if (password === '') {
+      return await this.userRepository.update(
+        { id },
+        { username, email, refreshToken, admin },
+      );
+    }
+    const salt = await bcrypt.genSalt();
+    const hashPassword = await bcrypt.hash(password, salt);
     return await this.userRepository.update(
       { id },
-      { username, password, email },
+      { username, password: hashPassword, email, refreshToken, admin },
     );
   }
 
@@ -66,6 +75,7 @@ export class UserService {
     const users = await this.userRepository.find({
       skip,
       take: itemsPerPage,
+      select: ['username', 'email', 'admin', 'id'],
     });
 
     // Get the total count of todos for the user

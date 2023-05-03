@@ -30,12 +30,12 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
-  @Get()
+  /*  @Get()
   @Roles(Role.Admin)
   @UseGuards(JwtAuthGuard, RolesGuard)
   findAll() {
     return this.userService.findAll();
-  }
+  }*/
 
   @Get(':id')
   @UseGuards(JwtAuthGuard, UserOwnershipGuard)
