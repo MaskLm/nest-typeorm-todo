@@ -1,4 +1,3 @@
-import { getUserid } from "../tools/functions/getUserid";
 import axios from "axios";
 import { handleAxiosError } from "../tools/functions/handleAxiosError";
 

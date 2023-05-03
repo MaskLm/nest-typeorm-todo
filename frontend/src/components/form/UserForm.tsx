@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { Formik, Form, Field, ErrorMessage, FormikProps } from "formik";
 import * as Yup from "yup";
-import { DoUpdateTodo } from "../../api/DoUpdateTodo";
 import { DoUpdateUser } from "../../api/DoUpdateUser";
 
 interface UserFormProps {
