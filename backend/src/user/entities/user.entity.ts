@@ -1,5 +1,6 @@
 import {
   BeforeInsert,
+  BeforeUpdate,
   Column,
   Entity,
   OneToMany,
@@ -36,6 +37,7 @@ export class User {
   @OneToMany(() => Todo, (todo) => todo.user)
   todos: Todo[];
 
+  @BeforeUpdate()
   @BeforeInsert()
   private async hashPassword() {
     const salt = await bcrypt.genSalt();

@@ -4,6 +4,7 @@ import { DoUserTodo } from "../../api/DoUserTodo";
 import { useNavigate } from "react-router-dom";
 import TodoForm from "../form/TodoForm";
 import { DoDeleteTodo } from "../../api/DoDeleteTodo";
+import { DoDeleteMultipleTodo } from "../../api/DoDeleteMultipleTodo";
 
 interface Todo {
   id: number;
@@ -18,6 +19,7 @@ interface Todo {
 
 const TodoList: React.FC = () => {
   const navigate = useNavigate();
+  const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [todos, setTodos] = useState<Todo[] | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
@@ -79,7 +81,18 @@ const TodoList: React.FC = () => {
       <ul>
         {todos.map((todo: Todo) => (
           <li key={todo.id}>
-            <div>Title: {todo.title}</div>
+            <div key={todo.id}>
+              <input
+                type="checkbox"
+                checked={selectedIds.includes(todo.id)}
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    setSelectedIds([...selectedIds, todo.id]);
+                  } else {
+                    setSelectedIds(selectedIds.filter((id) => id !== todo.id));
+                  }
+                }}
+              />Title: {todo.title}</div>
             <div>Description: {todo.description}</div>
             <div>Done: {todo.done ? "Yes" : "No"}</div>
             <div>Created At: {todo.createdAt}</div>
@@ -102,6 +115,35 @@ const TodoList: React.FC = () => {
         previousLabel="上一页"
         nextLabel="下一页"
       />
+      <div>
+        <input
+          type="checkbox"
+          checked={selectedIds.length === todos.length}
+          onChange={(e) => {
+            if (e.target.checked) {
+              setSelectedIds(todos.map((todo) => todo.id));
+            } else {
+              setSelectedIds([]);
+            }
+          }
+        }
+        /><label>Select All</label>
+      </div>
+      <button
+        onClick={async () => {
+          if (selectedIds.length > 0 && confirm('Are you sure you want to delete the selected items?')) {
+            try {
+              await DoDeleteMultipleTodo(selectedIds);
+              alert('Selected items deleted successfully.');
+              // 更新列表
+            } catch (error) {
+              alert(error);
+            }
+          }
+        }}
+      >
+        Delete Selected Items
+      </button>
       <div>
         {editingTodo ? <TodoForm initialValues={editingTodo} /> : <></>}
       </div>

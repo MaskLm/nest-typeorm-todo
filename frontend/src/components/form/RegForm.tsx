@@ -67,6 +67,9 @@ const RegForm: React.FC = () => {
         onChange={formik.handleChange}
         value={formik.values.username}
       />
+      {formik.errors.username && formik.touched.username && (
+        <p>{formik.errors.username}</p>
+      )}
       <label htmlFor="password">Password</label>
       <input
         id="password"
