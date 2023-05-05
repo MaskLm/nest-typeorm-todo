@@ -1,4 +1,3 @@
-import axios from "axios";
 import { handleAxiosError } from "../tools/functions/handleAxiosError";
 import axiosInstance from "../tools/axios/AxiosInterceptorsJwt";
 

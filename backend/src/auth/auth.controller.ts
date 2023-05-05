@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import { SkipJwtAuth } from './constants';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { LoginUserDto } from '../user/dto/login-user.dto';
-import { RefreshTokenDto } from "./dto/refresh-token.dto";
+import { RefreshTokenDto } from './dto/refresh-token.dto';
 
 @Controller('auth')
 export class AuthController {
