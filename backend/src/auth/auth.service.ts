@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
 import { User } from '../user/entities/user.entity';
@@ -73,7 +73,6 @@ export class AuthService {
 
       // Find the user by ID
       const user = await this.userService.findOne(decodedPayload.sub);
-
       // Check if the user exists and the Refresh Token matches
       if (user && user.refreshToken === refreshToken) {
         // Generate a new Access Token
@@ -95,5 +94,18 @@ export class AuthService {
       refreshToken: await this.generateRefreshToken(restUser),
       user: restUser,
     };
+  }
+
+  async refresh(refreshToken: string) {
+    try {
+      const decodedToken = await this.jwtService.verifyAsync(refreshToken);
+      const user = await this.userService.findOne(decodedToken.sub);
+      return {
+        accessToken: await this.refreshAccessToken(refreshToken),
+        refreshToken: await this.generateRefreshToken(user),
+      };
+    } catch (error) {
+      throw new UnauthorizedException('Invalid access token');
+    }
   }
 }

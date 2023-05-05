@@ -48,15 +48,15 @@ export class UserService {
 
   async update(id: number, updateUserDto: UpdateUserDto) {
     const { username, password, email, refreshToken, admin } = updateUserDto;
-    if (password === '') {
+    const backUser = await this.userRepository.findOne({
+      where: { id },
+    });
+    if (password === backUser.password) {
       return await this.userRepository.update(
         { id },
         { username, email, refreshToken, admin },
       );
     } else {
-      const backUser = await this.userRepository.findOne({
-        where: { id },
-      });
       if (backUser) {
         backUser.username = username;
         backUser.email = email;

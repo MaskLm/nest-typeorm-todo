@@ -1,20 +1,16 @@
 import axios from "axios";
 import { handleAxiosError } from "../tools/functions/handleAxiosError";
+import axiosInstance from "../tools/axios/AxiosInterceptorsJwt";
 
 export async function DoAddTodo(values: any) {
   const userString = localStorage.getItem("user");
   const user = userString ? JSON.parse(userString) : null;
-  const accessToken = localStorage.getItem("accessToken");
-  const addTodo = { ...values, user: user }
-  if (!!accessToken && !!user) {
+  const addTodo = { ...values, user: user };
+  if (!!user) {
     try {
-      const res = await axios.post(
-        import.meta.env.VITE_API_URL + `/todo`, addTodo,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
+      const res = await axiosInstance.post(
+        import.meta.env.VITE_API_URL + `/todo`,
+        addTodo
       );
       console.log("Data:", res.data);
     } catch (error) {

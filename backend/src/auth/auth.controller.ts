@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import { SkipJwtAuth } from './constants';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { LoginUserDto } from '../user/dto/login-user.dto';
+import { RefreshTokenDto } from "./dto/refresh-token.dto";
 
 @Controller('auth')
 export class AuthController {
@@ -13,5 +14,13 @@ export class AuthController {
   @Post('login')
   async login(@Body() user: LoginUserDto) {
     return await this.authService.login(user);
+  }
+
+  @SkipJwtAuth()
+  @Post('refresh')
+  async refresh(@Body() refreshTokenDto: RefreshTokenDto) {
+    const { refreshToken } = refreshTokenDto;
+    console.log(refreshToken);
+    return await this.authService.refresh(refreshToken);
   }
 }
