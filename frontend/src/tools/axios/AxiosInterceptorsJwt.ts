@@ -14,7 +14,7 @@ axiosInstance.interceptors.request.use(async (config) => {
       try {
         const ans = await refreshAccessToken(refreshToken);
         const newAccessToken = ans.accessToken;
-        localStorage.setItem('accessToken', ans.refreshToken);
+        localStorage.setItem('accessToken', ans.accessToken);
         localStorage.setItem('refreshToken', ans.refreshToken);
         config.headers.Authorization = `Bearer ${newAccessToken}`;
       } catch (error) {

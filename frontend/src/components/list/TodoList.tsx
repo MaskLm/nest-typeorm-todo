@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
-import Paginate from "react-paginate";
 import { DoUserTodo } from "../../api/DoUserTodo";
 import { useNavigate } from "react-router-dom";
-import TodoForm from "../form/TodoForm";
 import { DoDeleteTodo } from "../../api/DoDeleteTodo";
 import { DoDeleteMultipleTodo } from "../../api/DoDeleteMultipleTodo";
+import Pagination from "../../tools/containers/Pagination";
+import TodoItem from "../item/TodoItem";
+import { useEffect, useState } from "react";
+import SelectAll from "../action/SelectAll";
+import TodoForm from "../form/TodoForm";
 
 interface Todo {
   id: number;
@@ -43,8 +45,8 @@ const TodoList: React.FC = () => {
       });
   }, [currentPage]);
 
-  const handlePageClick = (selectedItem: { selected: number }) => {
-    setCurrentPage(selectedItem.selected + 1);
+  const handlePageClick = (selected: number) => {
+    setCurrentPage(selected + 1);
   };
 
   if (todos === null) {
@@ -76,74 +78,53 @@ const TodoList: React.FC = () => {
     }
   }
 
+  async function handleDeleteSelected() {
+    if (
+      selectedIds.length > 0 &&
+      confirm("Are you sure you want to delete the selected items?")
+    ) {
+      try {
+        await DoDeleteMultipleTodo(selectedIds);
+        alert("Selected items deleted successfully.");
+        // 更新列表
+      } catch (error) {
+        alert(error);
+      }
+    }
+  }
+
   return (
     <div>
       <ul>
         {todos.map((todo: Todo) => (
-          <li key={todo.id}>
-            <div key={todo.id}>
-              <input
-                type="checkbox"
-                checked={selectedIds.includes(todo.id)}
-                onChange={(e) => {
-                  if (e.target.checked) {
-                    setSelectedIds([...selectedIds, todo.id]);
-                  } else {
-                    setSelectedIds(selectedIds.filter((id) => id !== todo.id));
-                  }
-                }}
-              />Title: {todo.title}</div>
-            <div>Description: {todo.description}</div>
-            <div>Done: {todo.done ? "Yes" : "No"}</div>
-            <div>Created At: {todo.createdAt}</div>
-            <div>Updated At: {todo.updatedAt}</div>
-            <div>Deadline: {todo.deadline}</div>
-            <div>
-              <button onClick={() => handleDeleteClick(todo)}>Delete</button>
-              <button onClick={() => handleEditClick(todo)}>Edit</button>
-            </div>
-          </li>
+          <TodoItem
+            key={todo.id}
+            todo={todo}
+            selected={selectedIds.includes(todo.id)}
+            onToggleSelect={(id, selected) => {
+              if (selected) {
+                setSelectedIds([...selectedIds, id]);
+              } else {
+                setSelectedIds(selectedIds.filter((id) => id !== todo.id));
+              }
+            }}
+            onDeleteClick={handleDeleteClick}
+            onEditClick={handleEditClick}
+          />
         ))}
       </ul>
-      <Paginate
-        pageCount={totalPages}
-        pageRangeDisplayed={3}
-        marginPagesDisplayed={1}
-        onPageChange={handlePageClick}
-        containerClassName="pagination"
-        activeClassName="active"
-        previousLabel="上一页"
-        nextLabel="下一页"
-      />
-      <div>
-        <input
-          type="checkbox"
-          checked={selectedIds.length === todos.length}
-          onChange={(e) => {
-            if (e.target.checked) {
-              setSelectedIds(todos.map((todo) => todo.id));
-            } else {
-              setSelectedIds([]);
-            }
-          }
-        }
-        /><label>Select All</label>
-      </div>
-      <button
-        onClick={async () => {
-          if (selectedIds.length > 0 && confirm('Are you sure you want to delete the selected items?')) {
-            try {
-              await DoDeleteMultipleTodo(selectedIds);
-              alert('Selected items deleted successfully.');
-              // 更新列表
-            } catch (error) {
-              alert(error);
-            }
+      <Pagination pageCount={totalPages} onPageChange={handlePageClick} />
+      <SelectAll
+        allSelected={selectedIds.length === todos.length}
+        onToggleSelectAll={(selected) => {
+          if (selected) {
+            setSelectedIds(todos.map((todo) => todo.id));
+          } else {
+            setSelectedIds([]);
           }
         }}
-      >
-        Delete Selected Items
-      </button>
+        onDeleteSelected={handleDeleteSelected}
+      />
       <div>
         {editingTodo ? <TodoForm initialValues={editingTodo} /> : <></>}
       </div>
