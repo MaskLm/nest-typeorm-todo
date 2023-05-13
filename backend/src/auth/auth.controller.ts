@@ -2,7 +2,7 @@ import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SkipJwtAuth } from './constants';
 import { LocalAuthGuard } from './guards/local-auth.guard';
-import { LoginUserDto } from '../user/dto/login-user.dto';
+import { LoginUserDto } from '../account/dto/login-account.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 
 @Controller('auth')

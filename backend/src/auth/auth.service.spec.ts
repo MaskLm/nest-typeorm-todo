@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
-import { UserService } from '../user/user.service';
+import { AccountService } from '../account/account.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { User } from '../user/entities/user.entity';
+import { User } from '../account/entities/account.entity';
 import { Repository } from 'typeorm';
 import { jwtAccessConstants } from './constants';
 import { JwtModule } from '@nestjs/jwt';
@@ -25,7 +25,7 @@ describe('AuthService', () => {
         }),
       ],
       providers: [
-        UserService,
+        AccountService,
         AuthService,
         {
           provide: getRepositoryToken(User),
@@ -42,9 +42,9 @@ describe('AuthService', () => {
   });
 
   describe('validateUser', () => {
-    it('should return a user object without password when validating a valid user', async () => {
-      // 模拟 UserService 的 findByUsername 方法
-      const userService = moduleRef.get<UserService>(UserService);
+    it('should return a account object without password when validating a valid account', async () => {
+      // 模拟 AccountService 的 findByUsername 方法
+      const userService = moduleRef.get<AccountService>(AccountService);
       const mockUser: Partial<User> = {
         id: 1,
         username: 'testuser',

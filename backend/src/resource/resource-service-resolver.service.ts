@@ -1,16 +1,16 @@
 // resource-service-resolver.service.ts
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { UserService } from '../user/user.service';
+import { AccountService } from '../account/account.service';
 import { TodoService } from '../todo/todo.service';
 
 @Injectable()
 export class ResourceServiceResolver {
   constructor(
-    private userService: UserService,
+    private userService: AccountService,
     private todoService: TodoService,
   ) {}
 
-  resolve(resourceName: string): UserService | TodoService {
+  resolve(resourceName: string): AccountService | TodoService {
     switch (resourceName) {
       case 'user':
         return this.userService;

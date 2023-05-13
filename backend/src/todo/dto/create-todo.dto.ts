@@ -1,4 +1,4 @@
-import { User } from '../../user/entities/user.entity';
+import { User } from '../../account/entities/account.entity';
 
 export class CreateTodoDto {
   title: string;

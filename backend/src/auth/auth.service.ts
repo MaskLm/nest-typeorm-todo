@@ -1,18 +1,18 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UserService } from '../user/user.service';
-import { User } from '../user/entities/user.entity';
+import { AccountService } from '../account/account.service';
+import { User } from '../account/entities/account.entity';
 import * as bcrypt from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { LoginUserDto } from '../user/dto/login-user.dto';
+import { LoginUserDto } from '../account/dto/login-account.dto';
 
 type UserWithoutAuthMsg = Omit<Omit<User, 'password'>, 'refreshToken'>;
 
 @Injectable()
 export class AuthService {
   constructor(
-    private userService: UserService,
+    private userService: AccountService,
     private jwtService: JwtService,
     @InjectRepository(User)
     private userRepository: Repository<User>,
@@ -71,9 +71,9 @@ export class AuthService {
         secret: process.env.JWT_REFRESH_SECRET,
       });
 
-      // Find the user by ID
+      // Find the account by ID
       const user = await this.userService.findOne(decodedPayload.sub);
-      // Check if the user exists and the Refresh Token matches
+      // Check if the account exists and the Refresh Token matches
       if (user && user.refreshToken === refreshToken) {
         // Generate a new Access Token
         return this.generateAccessToken(user);

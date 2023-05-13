@@ -55,7 +55,7 @@ const UserList: React.FC = () => {
   }
 
   async function handleDeleteClick(user: User) {
-    const confirmed = confirm("Are you sure you want to delete this user?");
+    const confirmed = confirm("Are you sure you want to delete this account?");
     if (confirmed) {
       try {
         await DoDeleteUser(user.id);

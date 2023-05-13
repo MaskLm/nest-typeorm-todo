@@ -2,10 +2,11 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserModule } from './user/user.module';
+import { AccountModule } from './account/account.module';
 import { TodoModule } from './todo/todo.module';
 import { AuthModule } from './auth/auth.module';
 import { ResourceModule } from './resource/resource.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -21,10 +22,11 @@ import { ResourceModule } from './resource/resource.module';
       logging: false,
       migrations: [__dirname + '/migrations/!*{.ts,.js}'],
     }),
-    UserModule,
+    AccountModule,
     TodoModule,
     AuthModule,
     ResourceModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

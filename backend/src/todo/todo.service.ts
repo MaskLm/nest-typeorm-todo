@@ -4,6 +4,7 @@ import { UpdateTodoDto } from './dto/update-todo.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Todo } from './entities/todo.entity';
+import { SearchTodoDto } from './dto/search-todo.dto';
 
 @Injectable()
 export class TodoService {
@@ -36,7 +37,7 @@ export class TodoService {
       where: { user: { id: userId } },
     });
 
-    // Get the total count of todos for the user
+    // Get the total count of todos for the account
     const totalCount = await this.todoRepository.count({
       where: { user: { id: userId } },
     });
@@ -69,5 +70,45 @@ export class TodoService {
     return await this.todoRepository.delete({
       id,
     });
+  }
+
+  async searchTodo(
+    userId: number,
+    page: number,
+    itemsPerPage: number,
+    searchTodoDto: SearchTodoDto,
+  ) {
+    const { title, description, done } = searchTodoDto;
+    const skip = (page - 1) * itemsPerPage;
+    const where = {};
+    if (title) {
+      where['title'] = '%' + title + '%';
+    }
+    if (description) {
+      where['description'] = '%' + description + '%';
+    }
+    if (done) {
+      where['done'] = done;
+    }
+    where['account'] = { id: userId };
+
+    const todos = await this.todoRepository.find({
+      skip,
+      take: itemsPerPage,
+      where: where,
+    });
+
+    // Get the total count of todos for the account
+    const totalCount = await this.todoRepository.count({
+      where: where,
+    });
+
+    // Calculate the total number of pages
+    const totalPages = Math.ceil(totalCount / itemsPerPage);
+
+    return {
+      todos: todos,
+      totalPages: totalPages,
+    };
   }
 }

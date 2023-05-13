@@ -20,13 +20,13 @@ export class ResourceOwnershipGuard implements CanActivate {
     );
     const resourceService = this.resourceServiceResolver.resolve(resourceName);
     const request = context.switchToHttp().getRequest();
-    const user = request.user;
+    const account = request.account;
     const params = request.params;
     let targetResourceId = -1;
-    if (resourceName === 'todo') targetResourceId = parseInt(params.user, 10);
-    else if (resourceName === 'user')
+    if (resourceName === 'todo') targetResourceId = parseInt(params.account, 10);
+    else if (resourceName === 'account')
       targetResourceId = parseInt(params.id, 10);
-    return resourceService.isOwner(user, targetResourceId, resourceName);
+    return resourceService.isOwner(account, targetResourceId, resourceName);
   }
 }
 */

@@ -19,6 +19,7 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 import { UserOwnershipGuard } from '../auth/guards/user-ownership.guard';
 import { TodoOwnershipGuard } from '../auth/guards/todo-ownership.guard';
 import { TodoParamsOwnershipGuard } from '../auth/guards/todo-params-ownership.guard';
+import { SearchTodoDto } from './dto/search-todo.dto';
 
 @Controller('todo')
 export class TodoController {
@@ -55,7 +56,7 @@ export class TodoController {
     return this.todoService.remove(+id);
   }
 
-  @Get('user/:id')
+  @Get('account/:id')
   @UseGuards(JwtAuthGuard, UserOwnershipGuard)
   findAllByUserId(
     @Param('id') id: string,
@@ -63,5 +64,21 @@ export class TodoController {
     @Query('itemsPerPage') itemsPerPage: number,
   ) {
     return this.todoService.findAllByUserId(+id, +page, +itemsPerPage);
+  }
+
+  @Get('account/:id')
+  @UseGuards(JwtAuthGuard, UserOwnershipGuard)
+  searchTodo(
+    @Param('id') userId: string,
+    @Query('page') page: number,
+    @Query('itemsPerPage') itemsPerPage: number,
+    @Query() searchTodoDto: SearchTodoDto,
+  ) {
+    return this.todoService.searchTodo(
+      +userId,
+      +page,
+      +itemsPerPage,
+      searchTodoDto,
+    );
   }
 }

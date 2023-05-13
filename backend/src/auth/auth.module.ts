@@ -6,9 +6,9 @@ import { JwtModule } from '@nestjs/jwt';
 import { jwtAccessConstants } from './constants';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { LocalStrategy } from './strategies/local.strategy';
-import { User } from '../user/entities/user.entity';
+import { User } from '../account/entities/account.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserService } from '../user/user.service';
+import { AccountService } from '../account/account.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 @Module({
@@ -25,7 +25,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
     AuthService,
     LocalStrategy,
     JwtStrategy,
-    UserService,
+    AccountService,
     JwtAuthGuard,
   ],
 })

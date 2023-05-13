@@ -3,8 +3,8 @@ import { TodoService } from './todo.service';
 import { TodoController } from './todo.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Todo } from './entities/todo.entity';
-import { UserService } from '../user/user.service';
-import { User } from '../user/entities/user.entity';
+import { AccountService } from '../account/account.service';
+import { User } from '../account/entities/account.entity';
 import { ResourceModule } from '../resource/resource.module';
 import { UserOwnershipGuard } from '../auth/guards/user-ownership.guard';
 import { TodoOwnershipGuard } from '../auth/guards/todo-ownership.guard';
@@ -16,6 +16,6 @@ import { TodoOwnershipGuard } from '../auth/guards/todo-ownership.guard';
     ResourceModule,
   ],
   controllers: [TodoController],
-  providers: [TodoService, UserService, UserOwnershipGuard, TodoOwnershipGuard],
+  providers: [TodoService, AccountService, UserOwnershipGuard, TodoOwnershipGuard],
 })
 export class TodoModule {}

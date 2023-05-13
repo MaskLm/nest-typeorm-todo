@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -12,85 +12,28 @@ export class UserService {
     private userRepository: Repository<User>,
   ) {}
 
-  async create(createUserDto: CreateUserDto) {
-    const { username, password, email } = createUserDto;
-
+  create(createUserDto: CreateUserDto) {
+    const { displayName, public_emails, avatarUrl } = createUserDto;
     const user = new User();
-    user.username = username;
-    user.password = password;
-    user.email = email;
-    user.admin = false;
-
-    return await this.userRepository.save(user);
+    user.displayName = displayName;
+    user.public_emails = public_emails;
+    user.avatarUrl = avatarUrl;
+    return this.userRepository.save(user);
   }
 
-  async findAll() {
-    return await this.userRepository.find();
+  findAll() {
+    return `This action returns all user`;
   }
 
-  async findOne(id: number) {
-    return await this.userRepository.findOne({
-      where: { id },
-    });
+  findOne(id: number) {
+    return `This action returns a #${id} user`;
   }
 
-  async findByUsername(username: string) {
-    return await this.userRepository.findOne({
-      where: { username },
-    });
+  update(id: number, updateUserDto: UpdateUserDto) {
+    return `This action updates a #${id} user`;
   }
 
-  async checkAdmin(id: number) {
-    return await this.userRepository.findOne({
-      where: { id, admin: true },
-    });
-  }
-
-  async update(id: number, updateUserDto: UpdateUserDto) {
-    const { username, password, email, refreshToken, admin } = updateUserDto;
-    const backUser = await this.userRepository.findOne({
-      where: { id },
-    });
-    if (password === backUser.password) {
-      return await this.userRepository.update(
-        { id },
-        { username, email, refreshToken, admin },
-      );
-    } else {
-      if (backUser) {
-        backUser.username = username;
-        backUser.email = email;
-        backUser.admin = admin;
-        backUser.password = password;
-        return await this.userRepository.save(backUser);
-      }
-    }
-  }
-
-  async remove(id: number) {
-    return await this.userRepository.delete({
-      id,
-    });
-  }
-
-  async findAllPagination(page: number, itemsPerPage: number) {
-    const skip = (page - 1) * itemsPerPage;
-    // Find todos with pagination
-    const users = await this.userRepository.find({
-      skip,
-      take: itemsPerPage,
-      select: ['username', 'email', 'admin', 'id'],
-    });
-
-    // Get the total count of todos for the user
-    const totalCount = await this.userRepository.count({});
-
-    // Calculate the total number of pages
-    const totalPages = Math.ceil(totalCount / itemsPerPage);
-
-    return {
-      users: users,
-      totalPages: totalPages,
-    };
+  remove(id: number) {
+    return `This action removes a #${id} user`;
   }
 }

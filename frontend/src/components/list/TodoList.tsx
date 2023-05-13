@@ -7,42 +7,53 @@ import TodoItem from "../item/TodoItem";
 import { useEffect, useState } from "react";
 import SelectAll from "../action/SelectAll";
 import TodoForm from "../form/TodoForm";
-
-interface Todo {
-  id: number;
-  title: string;
-  description: string;
-  done: boolean;
-  createdAt: string;
-  updatedAt: string;
-  deadline: string;
-  user: number;
-}
+import { Todo } from "../../tools/interfaces/Todo";
+import { DoSearchTodo } from "../../api/DoSearchTodo";
 
 const TodoList: React.FC = () => {
   const navigate = useNavigate();
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [todos, setTodos] = useState<Todo[] | null>(null);
+  const [todoSearch, setTodoSearch] = useState<Todo | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
+  const [searching, setSearching] = useState<boolean>(false);
   const itemsPerPage = 3;
 
   useEffect(() => {
-    DoUserTodo(currentPage, itemsPerPage)
-      .then((ResTodos) => {
+    if(!searching)
+    {
+      DoUserTodo(currentPage, itemsPerPage)
+        .then((ResTodos) => {
+          if (ResTodos) {
+            setTodos(ResTodos.data.todos);
+            setTotalPages(ResTodos.data.totalPages);
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching todos:", error);
+          alert(error);
+          setTimeout(() => {
+            navigate("/login");
+          }, 1000);
+        });
+    }else{
+      DoSearchTodo(currentPage,itemsPerPage,todoSearch)
+        .then((ResTodos) => {
         if (ResTodos) {
           setTodos(ResTodos.data.todos);
           setTotalPages(ResTodos.data.totalPages);
         }
       })
-      .catch((error) => {
+        .catch((error) => {
         console.error("Error fetching todos:", error);
         alert(error);
         setTimeout(() => {
           navigate("/login");
         }, 1000);
       });
+  }
   }, [currentPage]);
 
   const handlePageClick = (selected: number) => {

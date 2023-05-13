@@ -1,13 +1,8 @@
-import { IsAlphanumeric, IsEmail, IsString, MaxLength } from 'class-validator';
+import { Account } from '../../account/entities/account.entity';
 
 export class CreateUserDto {
-  @IsAlphanumeric()
-  @MaxLength(10)
-  username: string;
-
-  @IsString()
-  password: string;
-
-  @IsEmail()
-  email: string;
+  displayName: string;
+  public_emails?: string[];
+  avatarUrl?: string;
+  account: Account;
 }

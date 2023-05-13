@@ -27,7 +27,7 @@ const RegForm: React.FC = () => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      console.log(import.meta.env.VITE_API_URL + "/user/reg");
+      console.log(import.meta.env.VITE_API_URL + "/account/reg");
       console.log("Form values:", values);
       try {
         await DoReg(values);

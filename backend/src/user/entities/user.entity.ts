@@ -1,46 +1,30 @@
 import {
-  BeforeInsert,
-  BeforeUpdate,
   Column,
   Entity,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
-  Unique,
 } from 'typeorm';
-import * as bcrypt from 'bcrypt';
+import { Account } from '../../account/entities/account.entity';
 import { Todo } from '../../todo/entities/todo.entity';
-import { Exclude } from 'class-transformer';
 
 @Entity()
-@Unique('UQ_USER_USERNAME', ['username'])
-@Unique('UQ_USER_EMAIL', ['email'])
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  username: string;
-
-  @Exclude()
-  @Column()
-  password: string;
-
-  @Column()
-  email: string;
-
-  @Column({ default: false, nullable: false })
-  admin: boolean;
+  @Column({ nullable: false })
+  displayName: string;
 
   @Column({ nullable: true })
-  refreshToken: string;
+  public_emails: string[];
+
+  @Column()
+  avatarUrl: string;
+
+  @ManyToOne(() => Account, (account) => account.users)
+  account: Account;
 
   @OneToMany(() => Todo, (todo) => todo.user)
   todos: Todo[];
-
-  @BeforeUpdate()
-  @BeforeInsert()
-  private async hashPassword() {
-    const salt = await bcrypt.genSalt();
-    this.password = await bcrypt.hash(this.password, salt);
-  }
 }
